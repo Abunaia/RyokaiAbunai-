@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor Who board game</title>
+    <style>
+        .random-button.selected {
+            background-color: black;
+            color: light blue;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #game-board {
+            display: grid;
+            border: 2px solid black;
+            aspect-ratio: 1 / 1;
+            width: 90vmin;
+            max-width: 90vh;
+            max-height: 90vw;
+        }
+
+        .cell {
+            border: 1px solid lightgray;
+            position: relative;
+        }
+
+        .wall {
+            background-color: black;
+        }
+
+        .player {
+            width: 70%;
+            height: 70%;
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #player-select {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        #controls button, #player-select button {
+            padding: 10px;
+            margin: 5px;
+        }
+
+        #dice {
+            width: 80px;
+            height: 80px;
+            border: 2px solid black;
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            cursor: pointer;
+        }
+
+        #dice-result {
+            margin-top: 5px;
+            font-size: 1.2em;
+        }
+
+        .random-button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+        }
+
+        .word-box {
+            border: 1px solid black;
+            padding: 5px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .scoreboard {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .score {
+            font-size: 4em;
+            margin: 20px 0;
+        }
+
+        .controls button {
+            font-size: 1.5em;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <h1>Doctor Who board game</h1>
+</head>
+<body>
+    <p>How to play</p>
+    <ol>
+        <li>Pick which player you want to be</li>
+        <li>Roll dice</li>
+        <li>Click your player name then move the peice to that number spot</li>
+        <li>Then the color you land on is the button you push at the bottom</li>
+        <li>Depend on which one you pick your score at the very botton<br> will go up or down</li>
+        <li>Objective is to get to the end with the most points</li>
+        <li>If you get the mission button you have to preform the mission <br>
+            before the other player complete there mission once you or the<br>
+            other player complete you must check the mission button complete<br>
+            if you didnt and hit the mission button again to get your score</li>
+    </ol>
+    <p>Good Luck</p>
+
+    <div id="player-select">
+        <button id="select-player-1" style="background :Brown; color:gold;">The<br> Packetwatch <br>Doctor</button>
+        <button id="select-player-2" style="background: silver; color: black;">Sonic<br>Screwdriver</button>
+        <button id="select-player-3" style="background: blue; color:white;">Tardis</button>
+        <button id="select-player-4" style="background: silver; color: red;">K9</button>
+        <button id="select-player-5" style="background: gold; color: red;">Sand<br>shoes</button>
+    </div>
+    <div id="game-board"></div>
+    <div id="controls">
+        <button id="up">Up</button><br>
+        <button id="left">Left</button>
+        <button id="right">Right</button><br>
+        <button id="down">Down</button><br>
+    </div>
+    <div id="dice">Roll Dice</div>
+    <div id="dice-result"></div>
+
+    <div id="word-box-1" class="word-box"></div>
+    <button class="random-button" id="button1" style="background-color: blue; color: white;">Time</button>
+
+    <div id="word-box-2" class="word-box"></div>
+    <button class="random-button" id="button2" style="background-color:yellow; color: black;">Mission</button>
+
+    <div id="word-box-3" class="word-box"></div>
+    <button class="random-button" id="button3" style="background-color: red; color: white;">Danger</button>
+
+    <div class="scoreboard">
+    <div class="player-name"style="background-color: brown; color: gold;">The Packetwatch Doctor</div>
+    <div class="score" id="player1Score">0</div>
+    <div class="controls">
+    <button class="score-button" data-player="player1Score" data-value="10">+10</button>
+    <button class="score-button" data-player="player1Score" data-value="-10">-10</button>
+    <button class="score-button" data-player="player1Score" data-value="100">+100</button>
+    <button class="score-button" data-player="player1Score" data-value="-100">-100</button>
+    </div>
+    </div>
+    
+    <div class="scoreboard">
+    <div class="player-name" style="background-color: silver; color: black;">Sonic Screwdriver</div>
+    <div class="score" id="player2Score">0</div>
+    <div class="controls">
+    <button class="score-button" data-player="player2Score" data-value="10">+10</button>
+    <button class="score-button" data-player="player2Score" data-value="-10">-10</button>
+    <button class="score-button" data-player="player2Score" data-value="100">+100</button>
+    <button class="score-button" data-player="player2Score" data-value="-100">-100</button>
+    </div>
+    </div>
+    
+    <div class="scoreboard">
+    <div class="player-name" style="background-color: blue; color: white;">Tardis</div>
+    <div class="score" id="player3Score">0</div>
+    <div class="controls">
+    <button class="score-button" data-player="player3Score" data-value="10">+10</button>
+    <button class="score-button" data-player="player3Score" data-value="-10">-10</button>
+    <button class="score-button" data-player="player3Score" data-value="100">+100</button>
+    <button class="score-button" data-player="player3Score" data-value="-100">-100</button>
+    </div>
+    </div>
+    
+    <div class="scoreboard">
+    <div class="player-name" style="background-color: silver; color: red;">K9</div>
+    <div class="score" id="player4Score">0</div>
+    <div class="controls">
+    <button class="score-button" data-player="player4Score" data-value="10">+10</button>
+    <button class="score-button" data-player="player4Score" data-value="-10">-10</button>
+    <button class="score-button" data-player="player4Score" data-value="100">+100</button>
+    <button class="score-button" data-player="player4Score<button class="score-button" data-player="player4Score" data-value="-100">-100</button>
+    </div>
+    </div>
+    
+    <div class="scoreboard">
+    <div class="player-name"style="background-color: gold; color: red;">Sand Shoes</div>
+    <div class="score" id="player5Score">0</div>
+    <div class="controls">
+    <button class="score-button" data-player="player5Score" data-value="10">+10</button>
+    <button class="score-button" data-player="player5Score" data-value="-10">-10</button>
+    <button class="score-button" data-player="player5Score" data-value="100">+100</button>
+    <button class="score-button" data-player="player5Score" data-value="-100">-100</button>
+    </div>
+    </div>
+    
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const board = document.getElementById('game-board');
+            const gridSize = 10;
+            const maze = [
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
+                [1, 0, 0, 0, 0, 1, 0, 1, 0, 1],
+                [1, 0, 1, 1, 0, 1, 0, 1, 0, 1],
+                [1, 0, 1, 1, 0, 1, 0, 1, 0, 1],
+                [1, 0, 1, 1, 0, 0, 0, 1, 0, 1],
+                [1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                ];
+                
+                            let players = [
+                { row: 1, col: 1, element: null, selected: false, image: 'url("/storage/emulated/0/Pictures/Photoroom/Photoroom-20250306_014848.png")', name: "The Packetwatch Doctor" },
+                { row: 1, col: 1, element: null, selected: false, image: 'url("/storage/emulated/0/Pictures/Photoroom/Photoroom-20250306_014752.png")', name: "Sonic Screwdriver" },
+                { row: 1, col: 1, element: null, selected: false, image: 'url("/storage/emulated/0/Pictures/Photoroom/Photoroom-20250306_014505.png")', name: "Tardis" },
+                { row: 1, col: 1, element: null, selected: false, image: 'url("/storage/emulated/0/Pictures/Photoroom/Photoroom-20250306_015048.png")', name: "K9" },
+                { row: 1, col: 1, element: null, selected: false, image: 'url("storage/emulated/0/Pictures/Photoroom/Photoroom-20250306_014644.png")', name: "Sand shoes" }
+                            ];
+                            const dice = document.getElementById('dice');
+                            const diceResult = document.getElementById('dice-result');
+                
+                            board.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+                            board.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
+    
+                const cellColors = [
+                    ['blue', 'yellow', 'red', 'blue', 'yellow', 'red', 'blue', 'yellow', 'red', 'black'],
+                    ['black', 'blue', 'yellow', 'red', 'blue', 'yellow', 'red', 'blue', 'yellow', 'black'],
+                    ['black', 'black', 'black', 'black', 'black', 'black', 'black', 'black', 'blue', 'black'],
+                    ['black', 'red', 'blue', 'yellow', 'red', 'black', 'yellow', 'black', 'red', 'black'],
+                    ['black', 'blue', 'black', 'black', 'blue', 'black', 'blue', 'black', 'yellow', 'black'],
+                    ['black', 'yellow', 'black', 'black', 'yellow', 'black', 'red', 'black', 'blue', 'black'],
+                    ['black', 'red', 'black', 'black', 'red', 'blue', 'yellow', 'black', 'red', 'black'],
+                    ['black', 'blue', 'black', 'black', 'black', 'black', 'black', 'black', 'yellow', 'black'],
+                    ['black', 'yellow', 'red', 'blue', 'yellow', 'red', 'blue', 'yellow', 'red', 'black'],
+                    ['black', 'black', 'black', 'black', 'black', 'black', 'black', 'black', 'black', 'black'],
+                ];
+                
+                const cells = [];
+                
+                for (let i = 0; i < gridSize; i++) {
+                cells[i] = [];
+                for (let j = 0; j < gridSize; j++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                
+                if (maze[i][j] === 1) {
+                cell.classList.add('wall');
+                } else {
+                cell.style.backgroundColor = cellColors[i][j];
+                }   
+                cells[i][j] = cell;
+                board.appendChild(cell);
+                }
+                }
+    
+                            players.forEach((player, index) => {
+                const playerElement = document.createElement('div');
+                playerElement.classList.add('player');
+                playerElement.style.backgroundImage = player.image;
+                player.element = playerElement;
+                board.children[player.row * gridSize + player.col].appendChild(playerElement);
+                            });
+                
+                            function movePlayer(player, direction) {
+                let newRow = player.row;
+                let newCol = player.col;
+                
+                if (direction === 'up') newRow--;
+                if (direction === 'down') newRow++;
+                if (direction === 'left') newCol--;
+                if (direction === 'right') newCol++;
+                
+                if (newRow >= 0 && newRow < gridSize && newCol >= 0 && newCol < gridSize && maze[newRow][newCol] === 0) {
+                    player.row = newRow;
+                    player.col = newCol;
+                    board.children[player.row * gridSize + player.col].appendChild(player.element);
+                }
+                            }
+                
+                            function getSelectedPlayer() {
+                return players.find(p => p.selected);
+                            }
+                
+                            ['up', 'down', 'left', 'right'].forEach(direction => {
+                document.getElementById(direction).addEventListener('click', () => {
+                    const selectedPlayer = getSelectedPlayer();
+                    if (selectedPlayer) movePlayer(selectedPlayer, direction);
+                });
+                            });
+                
+                            for (let i = 0; i < 5; i++) {
+                document.getElementById(`select-player-${i + 1}`).addEventListener('click', () => {
+                    players.forEach(p => p.selected = false);
+                    players[i].selected = true;
+                });
+                            }
+                
+                            dice.addEventListener('click', () => {
+                const roll = Math.floor(Math.random() * 6) + 1;
+                diceResult.textContent = `You rolled a ${roll}!`;
+                // Player movement removed
+                            });
+                
+                            const wordLists = {
+                "Time": {
+                    words: ["You got the key to the Tardis the Doctor trust you now add 10 to your score", "You help the doctor by pulling on him add 10 to your score", "You help Van Gogh feel better add 100 to your score","You save your husband by remembering him add 20 to your score",
+                    "You see the doctor across the room, and he see you add 10 to your score", "The doctor give you his watch protect it with your life add 50 to your score", "You try to fake an accent add 10 to your point", "You fool the angels ,while walking in the forest add 30 to your score",
+                    "You meet Sarah jane for the first time add 20 to your score", "You get to drive the Tardis add 50 to your score", " You got on an elevator and got a bath add 10 yo your score ", "You save the doctor by restarting his other heart add 100 to your score",
+                    "John Smith dream of a lifetime with you", "The doctor comes back for you and put his hand out", "The doctor save you in the liberty", "With the help of the Tardis you save Gallafrey",
+                    "You found tea to give to the doctor add 50", "The doctor give you K9 add 30 to your score", "Doctor burn up a star for you add 100 to your score", "You get called his partner as in Mr. and Mrs. add 10 to your score",
+                    "The doctor goes into your mind and you get to see what in his mind add 50 to your score", "The doctor give you a lottery ticket as a wedding gift add 50 to your score", "You get to travel around the round to tell you doctors story add 100 to your score", "You get to have Christmas with the doctor feed him well now add 30 to your score",
+                    "The doctor has to hide he run up and kisses you add 30 to your score", "You discover the Tardis is bigger on the inside add 10 to your score", "The Doctor believe in you as he fights your demon for you add 50 to your score", "You find out the doctor is still live add 50 to your score",
+                    "The doctor find out you are brilliant add 20 to ypur score", "The doctor prove time travel is real add 10 to your score", "Your stuck in hell and the doctor wants to live withyou add 30 to your score", "Captain Jack flirts with you add 10 to your score",
+                    "The doctor take you to where time began add 10 to your score", "The Doctor is all tied up and you save him as he reveals you to the master add 30 to your score", "The doctor confesses silently he needs you add 100 to your score", "You sing a song and save a ship from crashing add 20 to your score",
+                    "You shoot and kill a dalek add 50 to your score", "On your wedding you see the doctor add 10 to your score", "You have the power within. You can do this. now hit that button and think of why you want to stay here add 20 to your score", "The doctor ask you to come with him add 50 to your score"],
+                    },
+                    "Mission": {
+                    words: ["You are facing a Dalek.You need to repeat what Rose said to the Dalek(other player)to save your life if you success add 20 if fail subtract -50 ", "The Atraxi have arrive to earth. You have to be earth encyclopedia and name all the actors that have played the doctor. This will  show them that earth is protected. if you success add 50 you are strong. If you can't subtract -50 to your score",
+                    "Anne Droid has ask you a question  which blood cell contains iron red or white? answer it wrong and your the weakest link subtract -10. If you success add 10. ", "You are in facing the biggest choice of your life in front of the devil himself confess who you believe in and why if you cant subtract -50 If success add 100",
+                    "You spot miss foster having a meeting. You also see the doctor, your mission is to sign the same way to the other player and do not miss a single gesture that the other player know. If you miss one mission has failed subjact -30 to your score if you are success then add 50", "The Carrionites has done a spell on all your friend scream out why you love them and restart their heart if you cant mission has failed subject -50 if you can add 100 to your score",
+                    "You just found out there is angel all around you. At the start of this game if you choose the tardis you can run inside it and make the angel stare at each other add 50 to your score. If you did not mission has fail subject -100", "The master has change the whole world to look like him but he miss you. Tell the one player something you notice about them that is special to them add 50 to your score if you can. subject -100 if you cant",
+                    "You are stuck in a class room full of Krillitane and Mr Finch. At the start of this game if you choose K9 you can blow him up and kill them all add 50 to your score. if not mission has failed subject -100", "You are chain to the wall and the werewolf is coming. Choose a player hold hand with the other player of your choice and see if you can pull them to you if you can add 50 if not mission has failed subject -50",
+                    "The family of blood is after you.You need the doctor and the doctor needs to wake up for you to live at the start of this game if you choose the pocket watch then you can give it to the doctor and live another day add 50  if you didnt choose the watch mission has failed subject -50",
+                    "You are face with a Cyberman that need to be distracted roll a 6 and dont let the other players distact you at any time you get distract your mission has failed subject -30 if success add 50 to your score",
+                    "You face with a Angel stare at a player of your choice the first one to blink fails do not fail",
+                    "You are stuck on the planet of sand at the start of this game you got to choose your item to take with you if you choose the sand shoes. Then you can run to the bus in time. If you didn't mission has failed",
+                    "You are suck in a room with a Dalek at the start of this game the doctor gave you tool to choose from if youchoose the sonicscrew driver the you can have my premission to be sassy and unlock the door and run if not mission has failed"],
+                    },
+                    "Danger": {
+                    words: ["You get touch by a angel and disapear subtract -100 from your score", 
+                    "You turn away from the angel to be with your husband subtract -50 from your score", 
+                    "You see the love of your life and run to him he see you and run to you but get shot by the dalek subtract -100 from your score", 
+                    "You get stuck on a different domion saying good bye to the doctor subtract -100 from your score",
+                    "You get ypur face taken off subtract -20 from your score"],
+                    }
+                    };
+                    
+                    const wordBoxes = {
+                    "Time": document.getElementById('word-box-1'),
+                    "Mission": document.getElementById('word-box-2'),
+                    "Danger": document.getElementById('word-box-3')
+                    };
+                    
+                    const buttons = {
+                    "Time": document.getElementById('button1'),
+                    "Mission": document.getElementById('button2'),
+                    "Danger": document.getElementById('button3')
+                    };
+                    
+                    function getRandomWord(category) {
+                    const words = wordLists[category].words;
+                    return words[Math.floor(Math.random() * words.length)];
+                    }
+                    
+                    const allButtons = document.querySelectorAll('.random-button');
+                    
+                    function handleButtonClick(button) {
+                    allButtons.forEach(btn => btn.classList.remove('selected'));
+                    button.classList.add('selected');
+                    }
+                    
+                    buttons["Time"].addEventListener('click', () => {
+                    handleButtonClick(buttons["Time"]);
+                    wordBoxes["Time"].textContent = getRandomWord("Time");
+                    });
+                    
+                    function handleMissionButtonClick() {
+                    wordBoxes["Mission"].textContent = getRandomWord("Mission");
+                    }
+                    
+                    buttons["Mission"].addEventListener('click', () => {
+                    handleButtonClick(buttons["Mission"]);
+                    handleMissionButtonClick();
+                    });
+                    
+                    buttons["Danger"].addEventListener('click', () => {
+                    handleButtonClick(buttons["Danger"]);
+                    wordBoxes["Danger"].textContent = getRandomWord("Danger");
+                    });
+                    
+                    // Scoreboard functionality
+                    function changeScore(elementId, value) {
+                    const scoreElement = document.getElementById(elementId);
+                    let currentScore = parseInt(scoreElement.textContent);
+                    currentScore += value;
+                    scoreElement.textContent = currentScore;
+                    }
+                    
+                    const scoreButtons = document.querySelectorAll('.score-button');
+                    scoreButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                    const player = this.dataset.player;
+                    const value = parseInt(this.dataset.value);
+                    changeScore(player, value);
+                    });
+                    });
+                    });
+                    </script>
+                    </body>
+                    </html>
+                    
+                    
+    
