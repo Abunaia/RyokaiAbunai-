@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Coded Clock with Hands</title>
+    <style>
+        #clock {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 2px solid black;
+            margin: 50px auto;
+        }
+        .number {
+            position: absolute;
+            font-size: 20px;
+            font-weight: bold;
+            transform: translate(-50%, -50%);
+        }
+        .led {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+        }
+        .hand {
+            position: absolute;
+            transform-origin: 50% 95%; /* Rotate from the center bottom */
+            border-radius: 5px;
+        }
+        #hourHand {
+            width: 6px;
+            height: 70px;
+            background-color: black;
+        }
+        #minuteHand {
+            width: 4px;
+            height: 100px;
+            background-color: black;
+        }
+        #secondHand {
+            width: 2px;
+            height: 120px;
+            background-color: red;
+        }
+        body {
+            font-family: sans-serif;
+            text-align: center;
+        }
+        #repeatButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="clock">
+        <div id="hourHand" class="hand"></div>
+        <div id="minuteHand" class="hand"></div>
+        <div id="secondHand" class="hand"></div>
+    </div>
+
+    <button id="repeatButton" onclick="repeatMessage()">Repeat Message</button>
+
+    <script>
+        const clock = document.getElementById('clock');
+        const hourHand = document.getElementById('hourHand');
+        const minuteHand = document.getElementById('minuteHand');
+        const secondHand = document.getElementById('secondHand');
+
+        let lastMessage = ""; // Store the last displayed message
+
+        function createClock() {
+            for (let i = 1; i <= 12; i++) {
+                const number = document.createElement('div');
+                number.className = 'number';
+                number.textContent = i;
+
+                const angle = (i - 3) * (Math.PI / 6);
+                const radius = 130;
+                const x = 150 + Math.cos(angle) * radius;
+                const y = 150 + Math.sin(angle) * radius;
+
+                number.style.left = x + 'px';
+                number.style.top = y + 'px';
+                clock.appendChild(number);
+
+                const led = document.createElement('div');
+                led.className = 'led';
+                led.id = 'led' + i;
+
+                led.style.left = x + 20 * Math.cos(angle) + 'px';
+                led.style.top = y + 20 * Math.sin(angle) + 'px';
+                clock.appendChild(led);
+            }
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            const hourAngle = (hours % 12 + minutes / 60) * 30;
+            const minuteAngle = minutes * 6;
+            const secondAngle = seconds * 6;
+
+            hourHand.style.transform = `rotate(${hourAngle}deg)`;
+            minuteHand.style.transform = `rotate(${minuteAngle}deg)`;
+            secondHand.style.transform = `rotate(${secondAngle}deg)`;
+
+            // Dynamically calculate hand positions
+            const centerX = clock.offsetWidth / 2;
+            const centerY = clock.offsetHeight / 2;
+
+            hourHand.style.top = (centerY - hourHand.offsetHeight * 0.95) + 'px';
+            hourHand.style.left = (centerX - hourHand.offsetWidth / 2) + 'px';
+
+            minuteHand.style.top = (centerY - minuteHand.offsetHeight * 0.95) + 'px';
+            minuteHand.style.left = (centerX - minuteHand.offsetWidth / 2) + 'px';
+
+            secondHand.style.top = (centerY - secondHand.offsetHeight * 0.95) + 'px';
+            secondHand.style.left = (centerX - secondHand.offsetWidth / 2) + 'px';
+        }
+
+        function displayCharacter(char) {
+            let color, ledIndex;
+            if (char >= 'A' && char <= 'L') {
+                color = 'red';
+                ledIndex = char.charCodeAt(0) - 'A'.charCodeAt(0) + 1;
+            } else if (char >= 'M' && char <= 'X') {
+                color = 'blue';
+                ledIndex = char.charCodeAt(0) - 'M'.charCodeAt(0) + 1;
+            } else if (char >= 'Y' && char <= 'Z' || (char >= '0' && char <= '9')) {
+                color = 'green';
+                if (char >= '0' && char <= '9') {
+                    if (char === '0') {
+                        ledIndex = 12;
+                    } else {
+                        ledIndex = char.charCodeAt(0) - '1'.charCodeAt(0) + 1;
+                    }
+                } else {
+                    ledIndex = char.charCodeAt(0) - 'Y'.charCodeAt(0) + 1;
+                }
+            } else {
+                return;
+            }
+            if (ledIndex) {
+                const ledElement = document.getElementById('led' + ledIndex);
+                if (ledElement) {
+                    ledElement.style.backgroundColor = color;
+                    setTimeout(() => {
+                        ledElement.style.backgroundColor = '';
+                    }, 1000);
+                }
+            }
+        }
+
+        function displayMessage(message) {
+            lastMessage = message; // Store the message
+            for (let i = 0; i < message.length; i++) {
+                setTimeout(() => {
+                    displayCharacter(message[i]);
+                }, i * 1500);
+            }
+        }
+
+        function repeatMessage() {
+            if (lastMessage) {
+                displayMessage(lastMessage);
+            }
+        }
+
+        createClock();
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        window.receiveMessage = function(message) {
+            displayMessage(message.toUpperCase());
+        };
+    </script>
+</body>
+</html>

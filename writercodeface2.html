@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Send Message to Clock</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #messageInput {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="messageInput" placeholder="Enter message to send via clock">
+    <button onclick="sendMessage()">Display Message on Clock</button>
+
+    <script>
+        function sendMessage() {
+            const message = document.getElementById('messageInput').value;
+            // Assuming the clock page is in a new window or iframe, you'd need to adjust this.
+            // For example, if it's in a new window:
+            if (window.clockWindow && window.clockWindow.receiveMessage) {
+                window.clockWindow.receiveMessage(message);
+            } else {
+              alert("Clock window not found. Open the clock window first.");
+            }
+        }
+
+      //opens the clock in a new window.
+      window.onload = function(){
+         window.clockWindow = window.open('clock.html');
+      }
+
+    </script>
+</body>
+</html>
