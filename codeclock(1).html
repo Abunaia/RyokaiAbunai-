@@ -100,7 +100,9 @@
         const messageInput = document.getElementById('messageInput');
         const savedCodesList = document.getElementById('savedCodesList');
         const codeList = document.getElementById('codeList');
-        let savedCodes = [];
+
+        // Load saved codes from localStorage
+        let savedCodes = JSON.parse(localStorage.getItem('savedCodes')) || [];
 
         function createClock() {
             for (let i = 1; i <= 12; i++) {
@@ -221,6 +223,8 @@
                 }
             }
             savedCodes.push(code);
+            // Save to localStorage
+            localStorage.setItem('savedCodes', JSON.stringify(savedCodes));
             alert("Code saved!");
         }
 
@@ -228,6 +232,8 @@
             savedCodes = [];
             codeList.innerHTML = "";
             savedCodesList.style.display = 'none';
+            // Clear localStorage
+            localStorage.removeItem('savedCodes');
             alert("All saved codes deleted!");
         }
 
