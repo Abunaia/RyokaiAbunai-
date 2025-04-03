@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Coded Clock</title>
+    <style>
+        #clock {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 2px solid black;
+            margin: 50px auto;
+        }
+        .number {
+            position: absolute;
+            font-size: 20px;
+            font-weight: bold;
+            transform: translate(-50%, -50%);
+        }
+        .led {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+        }
+        body {
+            font-family: sans-serif;
+            text-align: center;
+        }
+        #messageInput {
+            margin-top: 20px;
+            width: 200px;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        #saveMessage, #deleteMessage, #repeatMessage, #viewSavedMessages {
+            margin-top: 10px;
+        }
+        #savedCodesList {
+            display: none; /* Initially hidden */
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            text-align: left;
+            margin: 20px auto;
+            width: 300px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="clock"></div>
+
+    <input type="text" id="messageInput" placeholder="Enter message to send via clock">
+    <button onclick="displayMessage()">Display Message on Clock</button>
+    <button id="saveMessage" onclick="saveMessage()">Save Code</button>
+    <button id="deleteMessage" onclick="deleteMessage()">Delete All Codes</button>
+    <button id="repeatMessage" onclick="repeatSavedCode()">Repeat Last Saved Code</button>
+    <button id="viewSavedMessages" onclick="viewSavedCodes()">View Saved Codes</button>
+    <div id="savedCodesList">Saved Codes: <ul id="codeList"></ul></div>
+
+    <script>
+        const clock = document.getElementById('clock');
+        const messageInput = document.getElementById('messageInput');
+        const savedCodesList = document.getElementById('savedCodesList');
+        const codeList = document.getElementById('codeList');
+        let savedCodes = [];
+
+        function createClock() {
+            for (let i = 1; i <= 12; i++) {
+                const number = document.createElement('div');
+                number.className = 'number';
+                number.textContent = i;
+
+                const angle = (i - 3) * (Math.PI / 6);
+                const radius = 130;
+                const x = 150 + Math.cos(angle) * radius;
+                const y = 150 + Math.sin(angle) * radius;
+
+                number.style.left = x + 'px';
+                number.style.top = y + 'px';
+                clock.appendChild(number);
+
+                const led = document.createElement('div');
+                led.className = 'led';
+                led.id = 'led' + i;
+
+                led.style.left = x + 20 * Math.cos(angle) + 'px';
+                led.style.top = y + 20 * Math.sin(angle) + 'px';
+                clock.appendChild(led);
+            }
+        }
+
+        function getCode(char) {
+            let color, ledIndex;
+            if (char >= 'A' && char <= 'L') {
+                color = 'red';
+                ledIndex = char.charCodeAt(0) - 'A'.charCodeAt(0) + 1;
+            } else if (char >= 'M' && char <= 'X') {
+                color = 'blue';
+                ledIndex = char.charCodeAt(0) - 'M'.charCodeAt(0) + 1;
+            } else if (char >= 'Y' && char <= 'Z' || (char >= '0' && char <= '9')) {
+                color = 'green';
+                if (char >= '0' && char <= '9') {
+                    if (char === '0') {
+                        ledIndex = 12;
+                    } else {
+                        ledIndex = char.charCodeAt(0) - '1'.charCodeAt(0) + 1;
+                    }
+                } else {
+                    ledIndex = char.charCodeAt(0) - 'Y'.charCodeAt(0) + 1;
+                }
+            } else {
+                return null;
+            }
+            return ledIndex + (color.charAt(0).toUpperCase());
+        }
+
+        function displayCharacter(char) {
+            let color, ledIndex;
+            if (char >= 'A' && char <= 'L') {
+                color = 'red';
+                ledIndex = char.charCodeAt(0) - 'A'.charCodeAt(0) + 1;
+            } else if (char >= 'M' && char <= 'X') {
+                color = 'blue';
+                ledIndex = char.charCodeAt(0) - 'M'.charCodeAt(0) + 1;
+            } else if (char >= 'Y' && char <= 'Z' || (char >= '0' && char <= '9')) {
+                color = 'green';
+                if (char >= '0' && char <= '9') {
+                    if (char === '0') {
+                        ledIndex = 12;
+                    } else {
+                        ledIndex = char.charCodeAt(0) - '1'.charCodeAt(0) + 1;
+                    }
+                } else {
+                    ledIndex = char.charCodeAt(0) - 'Y'.charCodeAt(0) + 1;
+                }
+            } else {
+                return;
+            }
+            if (ledIndex) {
+                const ledElement = document.getElementById('led' + ledIndex);
+                if (ledElement) {
+                    ledElement.style.backgroundColor = color;
+                    setTimeout(() => {
+                        ledElement.style.backgroundColor = '';
+                    }, 1000);
+                }
+            }
+        }
+
+        function displayMessage() {
+            const message = messageInput.value.toUpperCase();
+            for (let i = 0; i < message.length; i++) {
+                setTimeout(() => {
+                    displayCharacter(message[i]);
+                }, i * 1500);
+            }
+        }
+
+        function saveMessage() {
+            const message = messageInput.value.toUpperCase();
+            let code = "";
+            for(let i = 0; i < message.length; i++){
+                let charCode = getCode(message[i]);
+                if(charCode){
+                    code += charCode;
+                }
+            }
+            savedCodes.push(code);
+            alert("Code saved!");
+        }
+
+        function deleteMessage() {
+            savedCodes = [];
+            codeList.innerHTML = "";
+            savedCodesList.style.display = 'none';
+            alert("All saved codes deleted!");
+        }
+
+        function repeatSavedCode() {
+            if (savedCodes.length > 0) {
+                const code = savedCodes[savedCodes.length - 1];
+                const parts = code.match(/(\d+[RGB])/g); // Regex to get each number and color
+                if (parts) {
+                    parts.forEach(part => {
+                        let num = parseInt(part);
+                        let color = part.slice(-1);
+                        let realColor = "";
+                        if (color === "R") { realColor = "red"; }
+                        if (color === "B") { realColor = "blue"; }
+                        if (color === "G") { realColor = "green"; }
+
+                        const ledElement = document.getElementById('led' + num);
+                        if (ledElement) {
+                            ledElement.style.backgroundColor = realColor;
+                            setTimeout(() => {
+                                ledElement.style.backgroundColor = '';
+                            }, 1000);
+                        }
+                    });
+                }
+            } else {
+                alert("No saved codes to repeat.");
+            }
+        }
+
+        function viewSavedCodes() {
+            codeList.innerHTML = "";
+            savedCodes.forEach(code => {
+                const listItem = document.createElement('li');
+                listItem.textContent = code;
+                codeList.appendChild(listItem);
+            });
+            savedCodesList.style.display = 'block';
+        }
+
+        createClock();
+    </script>
+</body>
+</html>
