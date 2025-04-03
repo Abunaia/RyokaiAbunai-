@@ -24,7 +24,7 @@
             position: absolute;
             transform: translate(-50%, -50%);
         }
-        body {
+        .body {
             font-family: sans-serif;
             text-align: center;
         }
@@ -38,7 +38,7 @@
             margin-top: 10px;
         }
         #savedCodesList {
-            display: none; /* Initially hidden */
+            display: none;
             border: 1px solid #ccc;
             background-color: #f9f9f9;
             text-align: left;
@@ -46,10 +46,46 @@
             width: 300px;
             padding: 10px;
         }
+        .hand {
+            position: absolute;
+            width: 2px;
+            background-color: black;
+            transform-origin: bottom center;
+        }
+        #hourHand {
+            height: 60px;
+            top: 90px;
+            left: 149px;
+        }
+        #minuteHand {
+            height: 90px;
+            top: 60px;
+            left: 149px;
+        }
+        #secondHand {
+            height: 120px;
+            top: 30px;
+            left: 149px;
+            background-color: red;
+        }
+        .center {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: black;
+            border-radius: 50%;
+            top: 145px;
+            left: 145px;
+        }
     </style>
 </head>
 <body>
-    <div id="clock"></div>
+    <div id="clock">
+        <div id="hourHand" class="hand"></div>
+        <div id="minuteHand" class="hand"></div>
+        <div id="secondHand" class="hand"></div>
+        <div class="center"></div>
+    </div>
 
     <input type="text" id="messageInput" placeholder="Enter message to send via clock">
     <button onclick="displayMessage()">Display Message on Clock</button>
@@ -89,6 +125,23 @@
                 led.style.top = y + 20 * Math.sin(angle) + 'px';
                 clock.appendChild(led);
             }
+            updateClockHands();
+            setInterval(updateClockHands, 1000);
+        }
+
+        function updateClockHands() {
+            const now = new Date();
+            const hours = now.getHours() % 12;
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            const hourDegrees = (hours + minutes / 60) * 30;
+            const minuteDegrees = minutes * 6;
+            const secondDegrees = seconds * 6;
+
+            document.getElementById('hourHand').style.transform = `rotate(${hourDegrees}deg)`;
+            document.getElementById('minuteHand').style.transform = `rotate(${minuteDegrees}deg)`;
+            document.getElementById('secondHand').style.transform = `rotate(${secondDegrees}deg)`;
         }
 
         function getCode(char) {
@@ -161,9 +214,9 @@
         function saveMessage() {
             const message = messageInput.value.toUpperCase();
             let code = "";
-            for(let i = 0; i < message.length; i++){
+            for (let i = 0; i < message.length; i++) {
                 let charCode = getCode(message[i]);
-                if(charCode){
+                if (charCode) {
                     code += charCode;
                 }
             }
@@ -181,7 +234,7 @@
         function repeatSavedCode() {
             if (savedCodes.length > 0) {
                 const code = savedCodes[savedCodes.length - 1];
-                const parts = code.match(/(\d+[RGB])/g); // Regex to get each number and color
+                const parts = code.match(/(\d+[RGB])/g);
                 if (parts) {
                     parts.forEach(part => {
                         let num = parseInt(part);
