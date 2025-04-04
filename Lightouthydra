@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Lights Out</title>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url('Screenshot_20250404-093542_Files by Google.png'); /* Initial background */
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin: 0;
+    transition: background-image 0.5s ease; /* Smooth background transition */
+  }
+
+  /* ... (rest of the CSS remains the same) ... */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 50px);
+    gap: 5px;
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .cell {
+    width: 50px;
+    height: 50px;
+    background-color: gray;
+    border: 1px solid black;
+    cursor: pointer;
+    border-radius: 50%;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .cell.on {
+    background-image: url('Project_04-04(1)_Full HD 1080p_MEDIUM_FR30_(3).mp4');
+    background-color: transparent;
+  }
+
+  #message {
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: center;
+  }
+  #game-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+</style>
+</head>
+<body>
+  <div id="game-container">
+    <h1>Lights Out</h1>
+    <div id="grid" class="grid"></div>
+    <p id="message"></p>
+    <button onclick="resetGame()">Reset</button>
+  </div>
+
+  <audio id="clickSound" src="click.wav"></audio>
+  <audio id="winSound" src="win.wav"></audio>
+
+  <script>
+    const gridSize = 5;
+    let gridState = [];
+    const clickSound = document.getElementById("clickSound");
+    const winSound = document.getElementById("winSound");
+    const body = document.body; // get body element
+
+    function createGrid() {
+      //reset background
+      body.style.backgroundImage = "url('Project_04-04_Full HD 1080p_MEDIUM_FR30.mp4')";
+
+      const gridElement = document.getElementById("grid");
+      gridElement.innerHTML = "";
+
+      for (let i = 0; i < gridSize; i++) {
+        gridState[i] = [];
+        for (let j = 0; j < gridSize; j++) {
+          const cell = document.createElement("div");
+          cell.classList.add("cell");
+          cell.dataset.row = i;
+          cell.dataset.col = j;
+          cell.addEventListener("click", toggleCell);
+          gridElement.appendChild(cell);
+          gridState[i][j] = Math.random() < 0.5;
+        }
+      }
+      updateGridDisplay();
+    }
+
+    function updateGridDisplay() {
+      // ... (rest of updateGridDisplay remains the same) ...
+      const cells = document.querySelectorAll(".cell");
+      cells.forEach(cell => {
+        const row = parseInt(cell.dataset.row);
+        const col = parseInt(cell.dataset.col);
+        if (gridState[row][col]) {
+          cell.classList.add("on");
+        } else {
+          cell.classList.remove("on");
+        }
+      });
+    }
+
+    function toggleCell(event) {
+      // ... (rest of toggleCell remains the same) ...
+      clickSound.currentTime = 0;
+      clickSound.play();
+      const cell = event.target;
+      const row = parseInt(cell.dataset.row);
+      const col = parseInt(cell.dataset.col);
+
+      toggle(row, col);
+      toggle(row - 1, col);
+      toggle(row + 1, col);
+      toggle(row, col - 1);
+      toggle(row, col + 1);
+
+      updateGridDisplay();
+      checkWin();
+    }
+
+    function toggle(row, col) {
+      // ... (rest of toggle remains the same) ...
+      if (row >= 0 && row < gridSize && col >= 0 && col < gridSize) {
+        gridState[row][col] = !gridState[row][col];
+      }
+    }
+
+    function checkWin() {
+      const allOff = gridState.flat().every(cell => !cell);
+      if (allOff) {
+        winSound.currentTime = 0;
+        winSound.play();
+        document.getElementById("message").textContent = "You win!";
+        // change background
+        body.style.backgroundImage = "url('Photoroom/75096941(2).png')";
+
+      } else {
+        document.getElementById("message").textContent = "";
+      }
+    }
+
+    function resetGame(){
+      createGrid();
+    }
+
+    createGrid();
+  </script>
+</body>
+</html>
