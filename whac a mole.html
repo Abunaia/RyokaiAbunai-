@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Whac-a-Mole</title>
+<style>
+  body {
+  background-image: url("/storage/emulated/0/Pictures/Imagine/69998052 (2).png"); /* Replace with your image path */
+  background-size: cover; /* Or 'contain', 'repeat', etc. */
+  background-repeat: no-repeat; /* Or 'repeat', 'repeat-x', 'repeat-y' */
+  background-attachment: fixed; /* Optional: Keep the background fixed */
+}
+
+#game-container {
+  /* ... your other styles ... */
+  background-color: rgba(255, 255, 255, 0.8); /* Optional: semi-transparent white box */
+  padding: 20px;
+  border-radius: 10px;
+}
+
+
+  #game-container {
+    max-width: 600px;
+    margin: 20px auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 10px;
+  }
+
+  .hole {
+    aspect-ratio: 1 / 1;
+    background-color: #ddd;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mole {
+    position: absolute;
+    bottom: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 60%;
+    transition: bottom 0.15s;
+    pointer-events: auto;
+  }
+
+  .mole.up {
+    bottom: 10%;
+  }
+
+  .special-ring {
+    width: 90%;
+    height: 90%;
+    border: 5px solid yellow;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: ring-roll 3s linear infinite; /* Ring roll animation */
+    display: none; /* Initially hidden */
+  }
+
+  @keyframes ring-roll {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  #score, #timer {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+#scoreboard {
+  text-align: center;
+  font-size: 16px;
+  margin-top: 20px;
+  color: darkblue; /* Change the color of the "Scoreboard" heading */
+}
+
+#scoreboard h2 {
+    color: green; /* Change the color of the "Scoreboard" heading */
+}
+
+#scoreboard ol {
+  list-style-type: decimal;
+  padding-left: 20px;
+}
+
+#scoreboard ol li {
+  color: green; /* Change the color of the score entries (list items) */
+}
+
+  #scoreboard {
+    text-align: center;
+    font-size: 16px;
+    margin-top: 20px;
+  }
+
+  #scoreboard ol {
+    list-style-type: decimal;
+    padding-left: 20px;
+  }
+
+  #controls {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  #controls button {
+    font-size: 16px;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+
+  #initials-modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  #initials-modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  #initials-input {
+    padding: 8px;
+    margin: 10px 0;
+    width: 80%;
+    max-width: 300px;
+  }
+</style>
+</head>
+<body>
+  <div id="controls">
+    <button id="startButton">Start Game</button>
+    <button id="restartButton" style="display: none;">Restart Game</button>
+  </div>
+  <div id="score">Score: 0</div>
+  <div id="timer">Time: 10</div>
+  <div id="game-container">
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/Messenger_creation_651885727777024.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/received_699888452464199.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/received_966566435678135.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/received_1176814404038326.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/received_651885727777024.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/received_1010684683766932.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/4fca5854-5a41-44e5-bd8b-8d4fc4c3875f.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/cartoon-monkey-rigged-and-animated-05.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/3d-cartoon-monkey-rigged-character-model-3d-model-1bf0e42bfb.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/cartoon-monkey-rigged-and-animated-05 (1).png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/cartoon-monkey-rigged-and-animated-04.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/received_651885727777024.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/4fca5854-5a41-44e5-bd8b-8d4fc4c3875f.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/cartoon-monkey-rigged-and-animated-05.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/cartoon-monkey-rigged-and-animated-04.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/received_651885727777024.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/Messenger_creation_651885727777024.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/received_1010684683766932.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/received_1010684683766932.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/received_1176814404038326.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/received_966566435678135.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/received_699888452464199.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/Messenger_creation_651885727777024.png" alt="Mole"><div class="special-ring"></div></div>
+    <div class="hole"><img class="mole" src="/storage/emulated/0/Pictures/Photoroom/cartoon-monkey-rigged-and-animated-04.png" alt="Mole"><div class="special-ring"></div></div>
+  </div>
+
+  <div id="scoreboard">
+    <h2>Scoreboard</h2>
+    <ol id="highscores"></ol>
+  </div>
+
+  <div id="initials-modal">
+    <div id="initials-modal-content">
+      <h2>Enter Your Initials</h2>
+      <input type="text" id="initials-input" maxlength="3" placeholder="AAA">
+      <button id="submit-initials">Submit</button>
+    </div>
+  </div>
+
+  <script>
+    const holes = document.querySelectorAll('.hole');
+    const moles = document.querySelectorAll('.mole');
+    const scoreDisplay = document.querySelector('#score');
+    const timerDisplay = document.querySelector('#timer');
+    const highscoresList = document.querySelector('#highscores');
+    const startButton = document.querySelector('#startButton');
+    const restartButton = document.querySelector('#restartButton');
+    const initialsModal = document.querySelector('#initials-modal');
+    const initialsInput = document.querySelector('#initials-input');
+    const submitInitialsButton = document.querySelector('#submit-initials');
+    let score = 0;
+    let timeUp = false;
+    let timeLeft = 10;
+    let highscores = JSON.parse(localStorage.getItem('highscores')) || [];
+    let countdownInterval;
+    let specialHole;
+
+    function randomTime(min, max) {
+      return Math.round(Math.random() * (max - min) + min);
+    }
+
+    function randomHole(holes) {
+      const idx = Math.floor(Math.random() * holes.length);
+      const hole = holes[idx];
+      if (hole === lastHole) {
+        return randomHole(holes);
+      }
+      lastHole = hole;
+      return hole;
+    }
+
+    let lastHole;
+
+    function peep() {
+      const time = randomTime(400, 1200);
+      const hole = randomHole(holes);
+      const mole = hole.querySelector('.mole');
+      const ring = hole.querySelector('.special-ring');
+
+      holes.forEach(hole => hole.querySelector('.special-ring').style.display = 'none'); // Hide all rings
+
+      if (Math.random() < 0.2) {
+        ring.style.display = 'block'; // Show ring
+        specialHole = hole;
+      } else {
+        specialHole = null;
+      }
+
+      mole.classList.add('up');
+
+      setTimeout(() => {
+        mole.classList.remove('up');
+        ring.style.display = 'none';
+        if (!timeUp) peep();
+      }, time);
+    }
+
+    function startGame() {
+      scoreDisplay.textContent = 'Score: 0';
+      score = 0;
+      timeUp = false;
+      timeLeft = 10;
+      timerDisplay.textContent = `Time: ${timeLeft}`;
+      peep();
+
+      countdownInterval = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `Time: ${timeLeft}`;
+        if (timeLeft <= 0) {
+          clearInterval(countdownInterval);
+          timeUp = true;
+          initialsModal.style.display = 'block';
+        }
+      }, 1000);
+
+      startButton.style.display = 'none';
+      restartButton.style.display = 'block';
+    }
+
+    function bonk(e) {
+      if (!e.isTrusted) return;
+      if (!this.classList.contains('up')) return;
+      if (this.parentElement === specialHole) {
+        score += 2;
+      } else {
+        score++;
+      }
+      this.classList.remove('up');
+      this.parentElement.querySelector('.special-ring').style.display = 'none';
+      scoreDisplay.textContent = `Score: ${score}`;
+    }
+
+    function displayHighscores() {
+  highscoresList.innerHTML = '';
+  const validHighscores = highscores.filter(entry => {
+    return typeof entry === 'object' && entry !== null && 'initials' in entry && 'score' in entry;
+  });
+
+  validHighscores.forEach((entry, index) => {
+    const li = document.createElement('li');
+    li.textContent = `${index + 1}. ${entry.initials}: ${entry.score}`;
+    highscoresList.appendChild(li);
+  });
+}
+
+function endGame(initials) {
+  if (typeof initials === 'string' && initials.length > 0) {
+    highscores.push({ score: score, initials: initials });
+    highscores.sort((a, b) => b.score - a.score);
+    highscores = highscores.slice(0, 5);
+    localStorage.setItem('highscores', JSON.stringify(highscores));
+    displayHighscores();
+  } else {
+    console.error("Invalid initials provided:", initials);
+  }
+}
+
+
+    moles.forEach(mole => mole.addEventListener('touchstart', bonk));
+    moles.forEach(mole => mole.addEventListener('click', bonk));
+
+    displayHighscores();
+
+    startButton.addEventListener('click', startGame);
+    restartButton.addEventListener('click', () => {
+      clearInterval(countdownInterval);
+      startGame();
+    });
+
+    submitInitialsButton.addEventListener('click', () => {
+      const initials = initialsInput.value.toUpperCase();
+      if (initials.length === 3) {
+        endGame(initials);
+        initialsModal.style.display = 'none';
+        initialsInput.value = '';
+      } else {
+        alert('Please enter 3 initials.');
+      }
+    });
+  </script>
+</body>
+</html>
