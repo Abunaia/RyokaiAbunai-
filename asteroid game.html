@@ -7,7 +7,7 @@
   <style>
     body {
       margin: 0;
-      background-image: url('/storage/emulated/0/Download/HD-wallpaper-real-galaxy-atmosphere-sky-planets-black-dark-stars.jpg');
+      background-image: url('HD-wallpaper-real-galaxy-atmosphere-sky-planets-black-dark-stars.jpg');
       background-size: cover;
       overflow: hidden;
       font-family: sans-serif;
@@ -178,7 +178,7 @@
   </div>
 
   <div id="game-container">
-    <img src="/storage/emulated/0/Pictures/Photoroom/16258290 (1) (1) (1).png" id="dot" alt="dot">
+    <img src="16258290 (1) (1) (1).png" id="dot" alt="dot">
   </div>
 
   <div id="controls-container">
@@ -210,36 +210,36 @@
     let direction = "up";
     let gameOver = false;
     let score = 0;
-    const targetImages = ["/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (1).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (2).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (3).png",
-"/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (4).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (5).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (6).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (7).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (8).png", 
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (10) (1).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (11).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (12).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (13).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (14).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (15).png", 
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (16).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (17).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (18).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (19).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (20).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (21).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (22).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (23).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (24).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (25).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (26).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (27).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (28).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (29).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (30).png",
-  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (31).png",
+    const targetImages = ["1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (1).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (2).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (3).png",
+"1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (4).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (5).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (6).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (7).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (8).png", 
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (10) (1).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (11).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (12).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (13).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (14).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (15).png", 
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (16).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (17).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (18).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (19).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (20).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (21).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (22).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (23).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (24).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (25).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (26).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (27).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (28).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (29).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (30).png",
+  "1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (31).png",
 ];
 
     const directionAngles = {
