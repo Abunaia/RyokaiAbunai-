@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Dot Shooter Game</title>
+  <style>
+    body {
+      margin: 0;
+      background-image: url('/storage/emulated/0/Download/HD-wallpaper-real-galaxy-atmosphere-sky-planets-black-dark-stars.jpg');
+      background-size: cover;
+      overflow: hidden;
+      font-family: sans-serif;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #scoreboard-container {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 10px 0;
+      text-align: center;
+      z-index: 10;
+    }
+
+    #scoreboard {
+      display: inline-block;
+      font-size: 18px;
+    }
+
+    #highScores {
+      display: inline-block;
+      text-align: left;
+      margin-left: 20px;
+    }
+
+    #game-container {
+      width: 90vw;
+      max-width: 800px;
+      height: 600px;
+      border: 2px solid white;
+      position: relative;
+      overflow: hidden;
+      background-color: rgba(0, 0, 0, 0.5);
+      margin: 0 auto;
+    }
+
+    #dot {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background-color: transparent;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+
+    .target {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+    }
+
+    .bullet {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: yellow;
+      border-radius: 50%;
+      z-index: 3;
+    }
+
+    #controls-container {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 10px 0;
+      text-align: center;
+      z-index: 5;
+    }
+
+    #controls {
+      display: inline-grid;
+      grid-template-columns: repeat(3, 60px);
+      grid-template-rows: repeat(2, 60px);
+      gap: 10px;
+      justify-content: center;
+    }
+
+    button.control-btn {
+      font-size: 18px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 15px;
+      cursor: pointer;
+    }
+
+    .shoot-btn {
+      grid-column: 1 / span 3;
+      background-color: #e74c3c;
+    }
+
+    #start-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 11;
+      color: white;
+    }
+
+    #start-screen h1 {
+      margin-bottom: 20px;
+      font-size: 48px;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 20px;
+      border-radius: 10px;
+      border: none;
+      background-color: #2ecc71;
+      color: white;
+      cursor: pointer;
+    }
+
+    #game-over {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 36px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 20px 40px;
+      border-radius: 20px;
+      display: none;
+      text-align: center;
+      z-index: 10;
+    }
+
+    #restartBtn {
+      display: none;
+      position: fixed;
+      top: 60%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 15px 30px;
+      font-size: 20px;
+      background-color: #f39c12;
+      color: white;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      z-index: 11;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="scoreboard-container">
+    <div id="scoreboard">
+      Score: <span id="score">0</span>
+    </div>
+    <ol id="highScores"></ol>
+  </div>
+
+  <div id="game-container">
+    <img src="/storage/emulated/0/Pictures/Photoroom/16258290 (1) (1) (1).png" id="dot" alt="dot">
+  </div>
+
+  <div id="controls-container">
+    <div id="controls">
+      <button class="control-btn" onclick="move('up')">↑</button>
+      <div></div>
+      <button class.control-btn" onclick="move('right')">→</button>
+      <button class="control-btn" onclick="move('left')">←</button>
+      <button class="control-btn" onclick="move('down')">↓</button>
+      <button class="control-btn shoot-btn" onclick="shoot()">Shoot</button>
+    </div>
+  </div>
+
+  <div id="start-screen">
+    <h1>Dot Shooter</h1>
+    <button onclick="startGame()">Start Game</button>
+  </div>
+
+  <div id="game-over">Game Over</div>
+  <button id="restartBtn" onclick="restartGame()">Restart</button>
+
+  <script>
+    const dot = document.getElementById("dot");
+    const scoreDisplay = document.getElementById("score");
+    const highScoresList = document.getElementById("highScores");
+    const gameContainer = document.getElementById('game-container');
+    let x = 100, y = 100;
+    const step = 20;
+    let direction = "up";
+    let gameOver = false;
+    let score = 0;
+    const targetImages = ["/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (1).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (2).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (3).png",
+"/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (4).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (5).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (6).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (7).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (8).png", 
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (10) (1).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (11).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (12).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (13).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (14).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (15).png", 
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (16).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (17).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (18).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (19).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (20).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (21).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (22).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (23).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (24).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (25).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (26).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (27).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (28).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (29).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (30).png",
+  "/storage/emulated/0/Pictures/Photoroom/1000_F_143961567_u2gPPNgnS8ZegwA4EaO8M5XoHGACr4Xc (31).png",
+];
+
+    const directionAngles = {
+      up: -90,
+      right: 0,
+      down: 90,
+      left: 180
+    };
+
+    let activeTargets = [];
+    let targetSpawnInterval;
+
+    function move(dir) {
+      if (gameOver) return;
+
+      direction = dir;
+      const angle = directionAngles[dir];
+      dot.style.transform = `rotate(${angle}deg)`;
+
+      switch (dir) {
+        case "up": y = Math.max(0, y - step); break;
+        case "down": y = Math.min(gameContainer.offsetHeight - 40, y + step); break;
+        case "left": x = Math.max(0, x - step); break;
+        case "right": x = Math.min(gameContainer.offsetWidth - 40, x + step); break;
+      }
+
+      dot.style.top = y + "px";
+      dot.style.left = x + "px";
+    }
+
+    function shoot() {
+      if (gameOver) return;
+
+      const bullet = document.createElement("div");
+      bullet.className = "bullet";
+      let bulletX = x + 15;
+      let bulletY = y + 15;
+      bullet.style.left = bulletX + "px";
+      bullet.style.top = bulletY + "px";
+      gameContainer.appendChild(bullet);
+
+      const speed = 5;
+      const velocities = {
+        up: { dx: 0, dy: -speed },
+        down: { dx: 0, dy: speed },
+        left: { dx: -speed, dy: 0 },
+        right: { dx: speed, dy: 0 }
+      };
+      const { dx, dy } = velocities[direction];
+
+      const interval = setInterval(() => {
+        bulletX += dx;
+        bulletY += dy;
+        bullet.style.left = bulletX + "px";
+        bullet.style.top = bulletY + "px";
+
+        const bulletRect = bullet.getBoundingClientRect();
+        const targets = document.querySelectorAll('.target');
+
+        for (const target of targets) {
+          const targetRect = target.getBoundingClientRect();
+          const collision = (
+            bulletRect.left < targetRect.right &&
+            bulletRect.right > targetRect.left &&
+            bulletRect.top < targetRect.bottom &&
+            bulletRect.bottom > targetRect.top
+          );
+          if (collision) {
+            target.remove();
+            bullet.remove();
+            clearInterval(interval);
+            updateScore();
+            activeTargets = activeTargets.filter(t => t !== target);
+            return;
+          }
+        }
+
+        if (
+          bulletX < 0 || bulletX > gameContainer.offsetWidth ||
+          bulletY < 0 || bulletY > gameContainer.offsetHeight
+        ) {
+          bullet.remove();
+          clearInterval(interval);
+        }
+      }, 16);
+    }
+
+    function updateScore() {
+      score += 1;
+      scoreDisplay.textContent = score;
+    }
+
+    function spawnTarget() {
+      if (gameOver) return;
+
+      const target = document.createElement("img");
+      target.src = targetImages[Math.floor(Math.random() * targetImages.length)];
+      target.className = "target";
+      let tx = Math.random() * (gameContainer.offsetWidth - 40);
+      let ty = Math.random() * (gameContainer.offsetHeight - 40);
+      target.style.left = tx + "px";
+      target.style.top = ty + "px";
+      gameContainer.appendChild(target);
+
+      let dx = (Math.random() - 0.5) * 2;
+      let dy = (Math.random() - 0.5) * 2;
+
+      const moveInterval = setInterval(() => {
+        if (gameOver) {
+          clearInterval(moveInterval);
+          return;
+        }
+
+        tx += dx;
+        ty += dy;
+
+        if (tx < 0 || tx > gameContainer.offsetWidth - 40) dx *= -1;
+        if (ty < 0 || ty > gameContainer.offsetHeight - 40) dy *= -1;
+
+        target.style.left = tx + "px";
+        target.style.top = ty + "px";
+
+        const targetRect = target.getBoundingClientRect();
+        const dotRect = dot.getBoundingClientRect();
+        const hit = !(
+          dotRect.right < targetRect.left ||
+          dotRect.left > targetRect.right ||
+          dotRect.bottom < targetRect.top ||
+          dotRect.top > targetRect.bottom
+        );
+        if (hit) {
+          endGame();
+          clearInterval(moveInterval);
+        }
+      }, 30);
+      activeTargets.push(target);
+    }
+
+    function endGame() {
+      gameOver = true;
+      document.getElementById("game-over").style.display = "block";
+      document.getElementById("restartBtn").style.display = "block";
+      checkHighScore();
+    }
+
+    function checkHighScore() {
+      let highscores = JSON.parse(localStorage.getItem("dotHighScores")) || [];
+      if (highscores.length < 5 || score > highscores[4].score) {
+        const name = prompt("Top 5! Enter your name:");
+        highscores.push({ name, score });
+        highscores.sort((a, b) => b.score - a.score);
+        highscores = highscores.slice(0, 5);
+        localStorage.setItem("dotHighScores", JSON.stringify(highscores));
+      }
+      displayHighScores();
+    }
+
+    function displayHighScores() {
+      const highscores = JSON.parse(localStorage.getItem("dotHighScores")) || [];
+      highScoresList.innerHTML = "";
+      highscores.forEach(entry => {
+        const li = document.createElement("li");
+        li.textContent = `${entry.name}: ${entry.score}`;
+        highScoresList.appendChild(li);
+      });
+    }
+
+    function startGame() {
+      document.getElementById("start-screen").style.display = "none";
+      document.getElementById("game-over").style.display = "none";
+      document.getElementById("restartBtn").style.display = "none";
+      score = 0;
+      scoreDisplay.textContent = score;
+      gameOver = false;
+      x = 100;
+      y = 100;
+      dot.style.left = x + "px";
+      dot.style.top = y + "px";
+      displayHighScores();
+      activeTargets = [];
+      spawnTarget();
+      clearInterval(targetSpawnInterval);
+      targetSpawnInterval = setInterval(() => {
+        if (!gameOver) {
+          spawnTarget();
+        }
+      }, 2000);
+    }
+
+    function restartGame() {
+      clearInterval(targetSpawnInterval);
+      x = 100;
+      y = 100;
+      direction = "up";
+      document.querySelectorAll('.target').forEach(el => el.remove());
+      document.querySelectorAll('.bullet').forEach(el => el.remove());
+      startGame();
+    }
+    dot.style.left = x + "px";
+    dot.style.top = y + "px";
+    displayHighScores();
+  </script>
+</body>
+</html>
