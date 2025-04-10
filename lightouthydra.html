@@ -8,7 +8,7 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-image: url('/storage/emulated/0/Movies/cyberlink/PowerDirector/Project_04-04_Full HD 1080p_MEDIUM_FR30.mp4'); /* Initial background */
+    background-image: url('Project_04-04_Full HD 1080p_MEDIUM_FR30.mp4'); /* Initial background */
     background-size: cover;
     background-repeat: no-repeat;
     margin: 0;
@@ -37,7 +37,7 @@
   }
 
   .cell.on {
-    background-image: url('/storage/emulated/0/Movies/cyberlink/PowerDirector/Project_04-04(1)_Full HD 1080p_MEDIUM_FR30_(3).mp4');
+    background-image: url('Project_04-04(1)_Full HD 1080p_MEDIUM_FR30_(3).mp4');
     background-color: transparent;
   }
 
@@ -74,7 +74,7 @@
 
     function createGrid() {
       //reset background
-      body.style.backgroundImage = "url('/storage/emulated/0/Movies/cyberlink/PowerDirector/Project_04-04_Full HD 1080p_MEDIUM_FR30.mp4')";
+      body.style.backgroundImage = "url('Project_04-04_Full HD 1080p_MEDIUM_FR30.mp4')";
 
       const gridElement = document.getElementById("grid");
       gridElement.innerHTML = "";
@@ -140,7 +140,7 @@
         winSound.play();
         document.getElementById("message").textContent = "You win!";
         // change background
-        body.style.backgroundImage = "url('/storage/emulated/0/Pictures/Photoroom/75096941 (2).png')";
+        body.style.backgroundImage = "url('Photoroom/75096941 (2).png')";
 
       } else {
         document.getElementById("message").textContent = "";
